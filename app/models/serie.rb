@@ -1,9 +1,31 @@
 class Serie < ApplicationRecord
   has_many :rentals, as: :rentable
   has_many :episodes
-  enum status: ["coming-soon", "preorder", "billboard"]
-end
+  enum status: ["billboard", "preorder", "coming-soon"]
+  
+  def rented
+    rentals.any?
+  end
 
+  def total_duration
+    episodes.reduce(0) do |duration, episode|
+      duration + episode.duration
+    end
+  end
+
+  def episodes_count
+    episodes.count
+  end
+
+  def episodes_list
+    episodes.map do |episode|
+      {
+        :title => episode.title,
+        :id => episode.id,
+      }
+    end
+  end
+end
 # == Schema Information
 #
 # Table name: series
